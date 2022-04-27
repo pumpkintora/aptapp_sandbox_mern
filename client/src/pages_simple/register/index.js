@@ -18,7 +18,7 @@ const Register = () => {
     const register = () => {
         const { name, email, password } = user
         if (name && email && password) {
-            axios.post("http://localhost:6969/Register", user)
+            axios.post("http://localhost:6969/register", user)
                 .then(res => console.log(res))
         }
         else {
@@ -33,7 +33,7 @@ const Register = () => {
                 </div>
                 <span class="justify-center text-sm text-center text-gray-500 flex-items-center dark:text-gray-400">
                     Already have an account ?
-                    <a href="#" target="_blank" class="text-sm text-blue-500 underline hover:text-blue-700">
+                    <a href="/login" target="_blank" class="text-sm text-blue-500 underline hover:text-blue-700">
                         Sign in
                     </a>
                 </span>

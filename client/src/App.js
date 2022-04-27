@@ -1,32 +1,36 @@
-import './App.css';
-import Homepage from "./homepage"
-import Login from "./login"
-import Register from "./register"
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
-import { useState } from 'react';
+// router
+import Router from './routes'
+// theme
+import ThemeConfig from './theme';
+import GlobalStyles from './theme/globalStyles';
+// components
+import ScrollToTop from './components/ScrollToTop';
+// import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
 
 function App() {
-  const [user, setLoginUser] = useState({})
-
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route exact path="/">
-            {user && user._id ? <Homepage /> : <Login />}<Homepage />
-          </Route>
-          <Route path="/Login"><Login setLoginUser={setLoginUser} /></Route>
-          <Route path="/Register"><Register /></Route>
-        </Routes>
+    <ThemeConfig>
+      <ScrollToTop />
+      <GlobalStyles />
+      {/* <BaseOptionChartStyle /> */}
+      <Router />
+    </ThemeConfig>
+  )
+  // return (
+  //   <div className="App">
+  //     <Router>
+  //       <Routes>
+  //         <Route exact path="/">
+  //           {auth ? <Homepage /> : <Login />}<Homepage />
+  //         </Route>
+  //         <Route path="/login"><Login /></Route>
+  //         <Route path="/register"><Register /></Route>
+  //       </Routes>
 
-      </Router>
+  //     </Router>
 
-    </div>
-  );
+  //   </div>
+  // );
 }
 
 export default App;

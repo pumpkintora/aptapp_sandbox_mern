@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import AuthContext from '../../context/AuthProvider'
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 
-const Login = ({ setLoginUser }) => {
+const Login = () => {
+    const { auth, setAuth } = useContext(AuthContext)
+
     const navigate = useNavigate()
     
     const [user, setUser] = useState({
@@ -19,10 +22,10 @@ const Login = ({ setLoginUser }) => {
     }
 
     const login = () => {
-        axios.post("http://localhost:6969/Login", user)
+        axios.post("http://localhost:6969/login", user)
             .then(res => {
                 alert(res.data.message)
-                setLoginUser(res.data.user)
+                setAuth(res.data.user)
                 navigate("/")
             })
     }
@@ -71,13 +74,13 @@ const Login = ({ setLoginUser }) => {
                         </div>
                     </form>
                 </div>
-                <div class="flex items-center justify-center mt-6">
+                {/* <div class="flex items-center justify-center mt-6">
                     <a href="#" target="_blank" class="inline-flex items-center text-xs font-thin text-center text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-white" onClick={navigate("/Register")}>
                         <span class="ml-2">
                             You don&#x27;t have an account?
                         </span>
                     </a>
-                </div>
+                </div> */}
             </div>
 
         </>
