@@ -39,8 +39,8 @@ export const signup = async (req, res, next) => {
         let user = await db.User.create(req.body);
         let { id, username, email } = user
         let token = jwt.sign(
-            { id, username, email }, 
-            process.env.ACCESS_TOKEN_SECRET, 
+            { id, username, email },
+            process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '10s' }
         )
         return res.status(200).json({
@@ -55,4 +55,21 @@ export const signup = async (req, res, next) => {
             message: e.message
         })
     }
+}
+
+export const authenticateToken = async (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    console.log(token)
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        console.log(err)
+
+        if (err) return res.sendStatus(403)
+
+        req.user = user
+
+        next()
+    })
 }
