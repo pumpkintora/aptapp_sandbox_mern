@@ -1,7 +1,7 @@
 // react
 import { useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import TokenContext from '../context/TokenProvider'
+import TokenContext from '../context/AuthProvider'
 
 // material
 import { styled } from '@mui/material/styles';
@@ -28,6 +28,7 @@ import * as Yup from 'yup';
 import { Icon } from '@iconify/react'
 import Logo from '../components/Logo';
 import axios from 'axios';
+import { setTokenHeader } from '../api'
 
 // components ----------------------------------------------------------------------
 const Iconify = ({ icon, sx, ...other }) => {
@@ -35,7 +36,7 @@ const Iconify = ({ icon, sx, ...other }) => {
 }
 
 const LoginForm = () => {
-  const { token, setToken } = useContext(TokenContext)
+  const { user, setUser } = useContext(TokenContext)
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -52,12 +53,14 @@ const LoginForm = () => {
     },
     validationSchema: LoginSchema,
     onSubmit: values => {
-      axios.post("http://localhost:6969/login", values)
+      axios.post("http://localhost:6969/auth/signin", values)
         .then(res => {
-          setToken(res.data)
+          let { token } = res.data;
+          localStorage.setItem("jwtToken", token)
+          setTokenHeader(token)
+          setUser(res.data)
           navigate("/", { replace: true })
         })
-      // navigate('/', { replace: true });
     }
   });
 

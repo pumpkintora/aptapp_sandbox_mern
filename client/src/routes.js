@@ -7,10 +7,10 @@ import { Navigate, useRoutes } from 'react-router-dom'
 // hooks
 import { useState, useContext } from 'react';
 // context
-import TokenContext from './context/TokenProvider';
+import AuthContext from './context/AuthProvider';
 
 export default function Router() {
-    const { token } = useContext(TokenContext)
+    const { user } = useContext(AuthContext)
     return useRoutes([
         {
             path: '/',
