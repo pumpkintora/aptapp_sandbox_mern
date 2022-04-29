@@ -1,8 +1,7 @@
 // react
 import { useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import TokenContext from '../context/AuthProvider'
-
+import AuthContext from '../context/AuthProvider'
 // material
 import { styled } from '@mui/material/styles';
 import {
@@ -36,7 +35,7 @@ const Iconify = ({ icon, sx, ...other }) => {
 }
 
 const LoginForm = () => {
-  const { user, setUser } = useContext(TokenContext)
+  const { user, setUser } = useContext(AuthContext)
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -59,8 +58,7 @@ const LoginForm = () => {
           localStorage.setItem("jwtToken", token)
           setTokenHeader(token)
           setUser(res.data)
-          navigate("/", { replace: true })
-        })
+        }).then(() => navigate("/"))
     }
   });
 

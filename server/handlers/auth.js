@@ -7,17 +7,16 @@ export const signin = async (req, res, next) => {
         let user = await db.User.findOne({
             email: req.body.email
         });
-        let { id, username, email } = user;
+        let { id, email } = user;
         let isMatch = await user.comparePassword(req.body.password);
         if (isMatch) {
             let token = jwt.sign(
-                { id, username, email },
+                { id, email },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: "10s" }
             );
             return res.status(200).json({
                 id,
-                username,
                 email,
                 token
             });
@@ -37,14 +36,14 @@ export const signup = async (req, res, next) => {
         // create a user 
         // create a token
         let user = await db.User.create(req.body);
-        let { id, username, email } = user
+        let { id, email } = user
         let token = jwt.sign(
-            { id, username, email },
+            { id, email },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '10s' }
         )
         return res.status(200).json({
-            id, username, email, token
+            id, email, token
         })
     } catch (e) {
         if (e.code === 11000) {
@@ -58,17 +57,15 @@ export const signup = async (req, res, next) => {
 }
 
 export const authenticateToken = async (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return res.sendStatus(401)
+    try {
+        const authHeader = req.headers['authorization']
+        const token = authHeader && authHeader.split(' ')[1]
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        console.log(err)
-
-        if (err) return res.sendStatus(403)
-
-        req.user = user
-
-        next()
-    })
+        if (token == null) return res.sendStatus(401)
+    
+        const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        return res.send({user: user})
+    } catch (e) {
+        return next({ status: 400, message: "invalid token"})
+    }
 }

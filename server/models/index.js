@@ -14,6 +14,6 @@ mongoose.connect(process.env.MONGODB_URL, {
 
 export default {
     User,
-    Profile,
+    // Profile,
     // Notification,
 } 

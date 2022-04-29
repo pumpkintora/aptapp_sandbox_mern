@@ -1,6 +1,6 @@
 // pages
 import Login from './pages/Login'
-import Register from './pages_simple/register'
+import Register from './pages/Register'
 import Homepage from './pages_simple/homepage'
 // react-router-dom
 import { Navigate, useRoutes } from 'react-router-dom'

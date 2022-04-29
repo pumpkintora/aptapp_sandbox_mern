@@ -5,6 +5,7 @@ const profileSchema = new mongoose.Schema({
     first_name: { type: String, required: true, unique: true },
     last_name: { type: String, required: true, unique: true },
     telephone: { type: String, required: true, },
+    role: { type: String, required: true, },
     dob: { type: Date, required: true, },
     nationality: { type: String, required: true, },
     citizenship: { type: String, required: true, },

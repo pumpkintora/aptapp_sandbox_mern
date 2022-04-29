@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import errorHandler from "./handlers/error.js"
 import authRoutes from "./routes/auth.js"
-import tokenRoutes from "./routes/token.js"
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -13,7 +12,6 @@ app.use(cors());
 
 // handler
 app.use("/auth", authRoutes)
-app.use("/token", tokenRoutes)
 
 app.use(errorHandler);
 
