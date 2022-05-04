@@ -7,8 +7,6 @@ const userSchema = new mongoose.Schema({
     profile: { type: mongoose.Schema.Types.ObjectId, ref: "Profile" },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    // emailNotifications: [{ type: String }],
-    // smsNotifications: [{ type: String }],
 })
 
 userSchema.pre("save", async function (next) {

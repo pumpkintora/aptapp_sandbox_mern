@@ -59,6 +59,8 @@ export const signup = async (req, res, next) => {
     }
 }
 
+// verify user with jwt token
+// if token is invalid or expired, return 401 error
 export const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization']
@@ -73,7 +75,8 @@ export const authenticateToken = async (req, res, next) => {
     }
 }
 
-export const reset = async (req, res, next) => {
+// if user exists, send reset password email 
+export const forgotPassword = async (req, res, next) => {
     try {
         let user = await db.User.findOne({
             email: req.body.email
@@ -87,14 +90,35 @@ export const reset = async (req, res, next) => {
         await user.save().catch(err => console.log(err))
         const msg = {
             to: user.email,
-            from: 'Customer support <noreply@aptvise.com>', // Use the email address or domain you verified above
+            from: 'Aptvise <noreply@aptvise.com>', // Use the email address or domain you verified above
             subject: 'Reset password',
-            text: `Reset password by clicking this link: http://localhost:3000/reset/${token}`,
+            text: `Reset password by clicking this link: http://localhost:3000/reset-password/${token}`,
             // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         };
         await sgMail.send(msg).catch(err => console.error(err.response.body))
         console.log('email sent!')
         return res.send({ userExist: true })
+    } catch (e) {
+        return next(e)
+    }
+}
+
+// if reset token still valid, set new password
+export const resetPassword = async (req, res, next) => {
+    try {
+        const { token } = req.params
+        let user = await db.User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+        if (!user) {
+            return res.send({ resetPassword: false })
+        }
+        user.password = req.body.newPassword
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save().catch(err => console.error(err));
+        return res.send({ resetPassword: true })
     } catch (e) {
         return next(e)
     }

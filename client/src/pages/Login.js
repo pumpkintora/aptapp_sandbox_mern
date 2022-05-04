@@ -108,7 +108,7 @@ const LoginForm = () => {
             label="Remember me"
           />
 
-          <Link component={RouterLink} variant="subtitle2" to="/reset" underline="hover">
+          <Link component={RouterLink} variant="subtitle2" to="/forgot-password" underline="hover">
             Forgot password?
           </Link>
         </Stack>

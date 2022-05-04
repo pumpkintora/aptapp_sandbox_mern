@@ -23,89 +23,53 @@ import {
 // others
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
-import { Icon } from '@iconify/react'
 import Logo from '../components/Logo';
 import axios from 'axios';
 import { setTokenHeader } from '../api'
 
 // components ----------------------------------------------------------------------
-const Iconify = ({ icon, sx, ...other }) => {
-    return <Box component={Icon} icon={icon} sx={{ ...sx }} {...other} />;
-}
 
 const LoginForm = () => {
-    // const { user, setUser } = useContext(AuthContext)
-    const [showPassword, setShowPassword] = useState(false);
-    const [np, setNP] = useState('')
-    const [cnp, setCNP] = useState('')
-    const [err, setErr] = useState('')
+    const { user, setUser } = useContext(AuthContext)
     const navigate = useNavigate();
 
-    // const LoginSchema = Yup.object().shape({
-    //     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    // });
+    const LoginSchema = Yup.object().shape({
+        email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    });
 
     const formik = useFormik({
         initialValues: {
-            newPassword: '',
-            confirmNewPassword: ''
+            email: '',
         },
-        // validationSchema: LoginSchema,
+        validationSchema: LoginSchema,
         onSubmit: values => {
-            if (values.newPassword !== values.confirmNewPassword) setErr('Your passwords do not match!')
-            else {
-                if (values.newPassword !== '') {
-                    let token = window.location.href.replace('http://localhost:3000/reset-password/', '')
-                    console.log('set new password')
-                    axios.post(`http://localhost:6969/auth/reset-password/${token}`, values)
-                    .then(res => {
-                        navigate('/login')
-                        console.log(res.data)
-                    }).catch(err => console.log(err))
-                }
-            }
+            axios.post("http://localhost:6969/auth/forgot-password", values)
+                .then(res => {
+                    console.log(res.data.userExist)
+                    // if (res.data.userExist) navigate("/verify_success")
+                }).catch(err => console.log(err))
         }
     });
 
     const { errors, touched, values, handleSubmit, getFieldProps } = formik;
 
-    const handleShowPassword = () => {
-        setShowPassword((show) => !show);
-    };
-
     return (
         <FormikProvider value={formik}>
             <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                <Stack spacing={3}>
-                    <TextField
-                        fullWidth
-                        type={showPassword ? 'text' : 'password'}
-                        label="New Password"
-                        {...getFieldProps('newPassword')}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleShowPassword} edge="end">
-                                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                        // onChange={handleChange}
-                        error={Boolean(touched.newPassword && errors.newPassword)}
-                        helperText={err && touched.newPassword && errors.newPassword}
-                    // helperText={err}
-                    />
+                <TextField
+                    fullWidth
+                    autoComplete="username"
+                    type="email"
+                    label="Email address"
+                    {...getFieldProps('email')}
+                    error={Boolean(touched.email && errors.email)}
+                    helperText={touched.email && errors.email}
+                />
 
-                    <TextField
-                        fullWidth
-                        type={showPassword ? 'text' : 'password'}
-                        label="Confirm New Password"
-                        {...getFieldProps('confirmNewPassword')}
-                        // onChange={handleChange}
-                        error={Boolean(touched.confirmNewPassword && errors.confirmNewPassword)}
-                        helperText={err && touched.confirmNewPassword && errors.confirmNewPassword}
-                    />
+                <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 2 }}>
+                    <Link component={RouterLink} variant="subtitle2" to="/login" underline="hover">
+                        Back to login
+                    </Link>
                 </Stack>
 
                 <Button
@@ -113,7 +77,6 @@ const LoginForm = () => {
                     size="large"
                     type="submit"
                     variant="contained"
-                    sx={{ my: 2 }}
                 >
                     Submit
                 </Button>
@@ -192,8 +155,9 @@ export default function ResetPassword() {
                 <ContentStyle>
                     <Stack sx={{ mb: 5 }}>
                         <Typography variant="h4" gutterBottom>
-                            Reset password
+                            Forgot password?
                         </Typography>
+                        <Typography sx={{ color: 'text.secondary' }}>Enter your email and we'll send you a reset link.</Typography>
                     </Stack>
 
                     <LoginForm />

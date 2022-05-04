@@ -1,6 +1,7 @@
 // pages
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Homepage from './pages_simple/homepage'
 // react-router-dom
@@ -19,7 +20,8 @@ export default function Router() {
                 { path: '/', index: true, element: <Homepage /> },
                 { path: '/login', element: <Login /> },
                 { path: '/register', element: <Register />},
-                { path: '/reset', element: <ResetPassword />},
+                { path: '/forgot-password', element: <ForgotPassword />},
+                { path: '/reset-password/:reset_token', element: <ResetPassword />}
             ]
         },
         // {
