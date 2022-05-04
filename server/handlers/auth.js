@@ -1,5 +1,8 @@
 import db from "../models/index.js"
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import sgMail from "@sendgrid/mail"
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 export const signin = async (req, res, next) => {
     // finding a user
@@ -62,10 +65,37 @@ export const authenticateToken = async (req, res, next) => {
         const token = authHeader && authHeader.split(' ')[1]
 
         if (token == null) return res.sendStatus(401)
-    
+
         const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        return res.send({user: user})
+        return res.send({ user: user })
     } catch (e) {
-        return next({ status: 400, message: "invalid token"})
+        return next({ status: 400, message: "invalid token" })
+    }
+}
+
+export const reset = async (req, res, next) => {
+    try {
+        let user = await db.User.findOne({
+            email: req.body.email
+        });
+        if (!user) {
+            return res.send({ userExist: false })
+        }
+        let token = await crypto.randomBytes(64).toString('hex')
+        user.resetPasswordToken = token
+        user.resetPasswordExpires = Date.now() + (5 * 60 * 1000)
+        await user.save().catch(err => console.log(err))
+        const msg = {
+            to: user.email,
+            from: 'Customer support <noreply@aptvise.com>', // Use the email address or domain you verified above
+            subject: 'Reset password',
+            text: `Reset password by clicking this link: http://localhost:3000/reset/${token}`,
+            // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        };
+        await sgMail.send(msg).catch(err => console.error(err.response.body))
+        console.log('email sent!')
+        return res.send({ userExist: true })
+    } catch (e) {
+        return next(e)
     }
 }

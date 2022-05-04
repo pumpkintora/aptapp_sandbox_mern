@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, },
     profile: { type: mongoose.Schema.Types.ObjectId, ref: "Profile" },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     // emailNotifications: [{ type: String }],
     // smsNotifications: [{ type: String }],
 })
