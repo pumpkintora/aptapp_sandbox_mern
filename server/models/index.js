@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "./user.js"
+import PendingVerifyUser from "./pendingVerifyUser.js";
 import Profile from './profile.js';
 import dotenv from 'dotenv';
 dotenv.config()
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 
 export default {
     User,
+    PendingVerifyUser,
     // Profile,
     // Notification,
 } 
