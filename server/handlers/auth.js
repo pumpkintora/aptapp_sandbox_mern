@@ -2,6 +2,7 @@ import db from "../models/index.js"
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import sgMail from "@sendgrid/mail"
+import { decode } from "punycode";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 export const signin = async (req, res, next) => {
@@ -123,3 +124,11 @@ export const resetPassword = async (req, res, next) => {
         return next(e)
     }
 }
+
+// export const tfaMobile = async (req, res, next) => {
+//     try {
+
+//     } catch (e) {
+
+//     }
+// }

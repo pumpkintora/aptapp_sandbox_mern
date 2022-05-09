@@ -58,10 +58,10 @@ const LoginForm = () => {
                     let token = window.location.href.replace('http://localhost:3000/reset-password/', '')
                     console.log('set new password')
                     axios.post(`http://localhost:6969/auth/reset-password/${token}`, values)
-                    .then(res => {
-                        navigate('/login')
-                        console.log(res.data)
-                    }).catch(err => console.log(err))
+                        .then(res => {
+                            navigate('/login')
+                            console.log(res.data)
+                        }).catch(err => console.log(err))
                 }
             }
         }

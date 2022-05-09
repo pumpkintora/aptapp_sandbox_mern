@@ -5,6 +5,7 @@ import { signup, signin, authenticateToken, forgotPassword, resetPassword } from
 router.get('/', authenticateToken)
 router.post('/signup', signup)
 router.post('/signin', signin)
+// router.post('/tfa-mobile', tfaMobile)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 
