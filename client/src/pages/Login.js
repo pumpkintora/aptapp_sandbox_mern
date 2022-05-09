@@ -1,7 +1,7 @@
 // react
 import { useState, useContext, useEffect } from 'react'
 import { Link as RouterLink, useNavigate, useLocation, } from 'react-router-dom'
-import AuthContext from '../context/AuthProvider'
+import { AuthContext } from '../context/AuthProvider'
 // material
 import { styled } from '@mui/material/styles'
 import {
