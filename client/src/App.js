@@ -1,30 +1,25 @@
-// react 
-import React from 'react';
-// router
-import Router from './routes'
+// routes
+import Router from './routes';
 // theme
-import ThemeConfig from './theme';
-import GlobalStyles from './theme/globalStyles';
+import ThemeProvider from './theme';
 // components
+import ThemeSettings from './components/settings';
 import ScrollToTop from './components/ScrollToTop';
-import { setTokenHeader } from './api';
-// import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
+import { ProgressBarStyle } from './components/ProgressBar';
+import MotionLazyContainer from './components/animate/MotionLazyContainer';
 
-if (localStorage.jwtToken) {
-  setTokenHeader(localStorage.jwtToken);
-  // verify token
-  // if token invalid, force logout
-}
+// ----------------------------------------------------------------------
 
-function App() {
+export default function App() {
   return (
-    <ThemeConfig>
-      <ScrollToTop />
-      <GlobalStyles />
-      {/* <BaseOptionChartStyle /> */}
-      <Router />
-    </ThemeConfig>
-  )
+    <MotionLazyContainer>
+      <ThemeProvider>
+        <ThemeSettings>
+          <ProgressBarStyle />
+          <ScrollToTop />
+          <Router />
+        </ThemeSettings>
+      </ThemeProvider>
+    </MotionLazyContainer>
+  );
 }
-
-export default App;
