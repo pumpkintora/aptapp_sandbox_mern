@@ -143,7 +143,6 @@ export const resetPassword = async (req, res, next) => {
         return next(e)
     }
 }
-<<<<<<< HEAD
 
 // export const tfaMobile = async (req, res, next) => {
 //     try {
@@ -152,5 +151,3 @@ export const resetPassword = async (req, res, next) => {
 
 //     }
 // }
-=======
->>>>>>> 50c4f44cb67fd6ef8dc4306ab1bc1746d3cd1ca6
