@@ -3,8 +3,20 @@ import jwt from 'jsonwebtoken'
 import speakeasy from 'speakeasy'
 import QRCode from 'qrcode'
 import crypto from 'crypto'
+import bcrypt from 'bcrypt'
 import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+// function generateOTP() {         
+//     // Declare a digits variable 
+//     // which stores all digits
+//     var digits = '0123456789';
+//     let otp = '';
+//     for (let i = 0; i < 6; i++ ) {
+//         otp += digits[Math.floor(Math.random() * 10)];
+//     }
+//     return otp;
+// }
 
 export const signin = async (req, res, next) => {
     // finding a user
@@ -38,17 +50,31 @@ export const signin = async (req, res, next) => {
 
 export const signup = async (req, res, next) => {
     try {
-        // create a user
-        // create a token
-        let user = await db.User.create(req.body)
-        let { id, email } = user
-        let token = jwt.sign({ id, email }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '10s',
+        // create a pending verify user
+        // generate a verify token
+        // email user with link containing verify token
+        // return successful response
+
+        let verifyToken = await crypto.randomBytes(64).toString('hex')
+        let pendingVerifyUser = await db.PendingVerifyUser.create({
+            ...req.body,
+            verifyToken
         })
+
+        const msg = {
+            to: req.body.email,
+            from: 'Aptvise <noreply@aptvise.com>', // Use the email address or domain you verified above
+            subject: 'Email verification success',
+            text: `Go to this link to complete your email verification: http://localhost:3000/auth/verify/${verifyToken}`,
+        }
+
+        await sgMail.send(msg).catch((err) => console.error(err.response.body))
+
+        let { id, email } = pendingVerifyUser
+
         return res.status(200).json({
             id,
             email,
-            token,
         })
     } catch (e) {
         if (e.code === 11000) {
@@ -61,21 +87,39 @@ export const signup = async (req, res, next) => {
     }
 }
 
-// verify whether the token is invalid
+export const setupTfa = async (req, res, next) => {
+    try {
+        
+    }
+}
+
+// verify email
 export const verify = async (req, res, next) => {
     try {
+
         // find the verifying user from PendingVerifyUser collection
         let pendingUser = await db.PendingVerifyUser.fineOne({
-            email: req.body.email,
+            verifyToken: req.body.verifyToken,
         })
         // if pending user not found, return error
-        if (!pendingUser) return res.send({message: 'pending user not found'})
-        // if token is wrong or expired, return invalid token message
-        // else, create a new user a
+        if (!pendingUser) return res.send({ message: 'pending user not found' })
 
-        let user = await db.User.create()
+        let user = await db.User.create({ 
+            email: pendingUser.email, 
+            password: pendingUser.password 
+        })
+        let token = jwt.sign({ id, email }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: '10s',
+        })
+        return res.status(200).json({
+            user,
+            token,
+        })
     } catch (e) {
-        return next({ status: 400, message: e.message })
+        return next({ 
+            status: 400, 
+            message: e.message 
+        })
     }
 }
 
@@ -106,13 +150,13 @@ export const forgotPassword = async (req, res, next) => {
         }
         let token = await crypto.randomBytes(64).toString('hex')
         user.resetPasswordToken = token
-        user.resetPasswordExpires = Date.now() + 5 * 60 * 1000
+        user.resetPasswordExpires = Date.now() + 10 * 1000
         await user.save().catch((err) => console.log(err))
         const msg = {
             to: user.email,
             from: 'Aptvise <noreply@aptvise.com>', // Use the email address or domain you verified above
             subject: 'Reset password',
-            text: `Reset password by clicking this link: http://localhost:3000/reset-password/${token}`,
+            text: `Reset password by clicking this link: http://localhost:3000/auth/new-password/${token}`,
             // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         }
         await sgMail.send(msg).catch((err) => console.error(err.response.body))
@@ -143,11 +187,3 @@ export const resetPassword = async (req, res, next) => {
         return next(e)
     }
 }
-
-// export const tfaMobile = async (req, res, next) => {
-//     try {
-
-//     } catch (e) {
-
-//     }
-// }
