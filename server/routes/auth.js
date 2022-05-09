@@ -1,6 +1,12 @@
-import express from 'express';
-const router = express.Router();
-import { signup, signin, authenticateToken, forgotPassword, resetPassword } from '../handlers/auth.js'
+import express from 'express'
+const router = express.Router()
+import {
+    signup,
+    signin,
+    authenticateToken,
+    forgotPassword,
+    resetPassword,
+} from '../handlers/auth.js'
 
 router.get('/', authenticateToken)
 router.post('/signup', signup)

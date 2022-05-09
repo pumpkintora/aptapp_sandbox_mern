@@ -14,6 +14,11 @@ import AuthContext from './context/AuthProvider';
 export default function Router() {
     const { user } = useContext(AuthContext)
     return useRoutes([
+        // {
+        //     path: '/dashboard',
+        //     element: <DashboardLayout />,
+        //     children: []
+        // },
         {
             path: '/',
             children: [
