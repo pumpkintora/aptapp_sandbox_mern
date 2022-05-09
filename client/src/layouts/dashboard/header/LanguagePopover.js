@@ -1,16 +1,18 @@
 import { useState } from 'react';
 // @mui
 import { MenuItem, Stack } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import Image from '../../../components/Image';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
-// config
-import { allLangs } from '../../../config';
 
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
+  const { allLangs, currentLang, onChangeLang } = useLocales();
+
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -19,6 +21,11 @@ export default function LanguagePopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleChangeLang = (newLang) => {
+    onChangeLang(newLang);
+    handleClose();
   };
 
   return (
@@ -31,7 +38,7 @@ export default function LanguagePopover() {
           ...(open && { bgcolor: 'action.selected' }),
         }}
       >
-        <Image disabledEffect src={allLangs[0].icon} alt={allLangs[0].label} />
+        <Image disabledEffect src={currentLang.icon} alt={currentLang.label} />
       </IconButtonAnimate>
 
       <MenuPopover
@@ -47,7 +54,11 @@ export default function LanguagePopover() {
       >
         <Stack spacing={0.75}>
           {allLangs.map((option) => (
-            <MenuItem key={option.value} selected={option.value === allLangs[0].value} onClick={handleClose}>
+            <MenuItem
+              key={option.value}
+              selected={option.value === currentLang.value}
+              onClick={() => handleChangeLang(option.value)}
+            >
               <Image disabledEffect alt={option.label} src={option.icon} sx={{ width: 28, mr: 2 }} />
 
               {option.label}

@@ -1,13 +1,27 @@
 import PropTypes from 'prop-types';
+import { forwardRef } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
 import { Box, Link, ListItemText, Typography, Tooltip } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
+// guards
+import RoleBasedGuard from '../../../guards/RoleBasedGuard';
 //
 import Iconify from '../../Iconify';
-import { ListItemStyle as ListItem, ListItemTextStyle, ListItemIconStyle } from './style';
+import { ListItemStyle, ListItemTextStyle, ListItemIconStyle } from './style';
 import { isExternalLink } from '..';
 
 // ----------------------------------------------------------------------
+
+// HANDLE SHOW ITEM BY ROLE
+const ListItem = forwardRef((props, ref) => (
+  <RoleBasedGuard roles={props.roles}>
+    <ListItemStyle {...props} ref={ref}>
+      {props.children}
+    </ListItemStyle>
+  </RoleBasedGuard>
+));
 
 ListItem.propTypes = {
   children: PropTypes.node,
@@ -32,6 +46,8 @@ NavItemRoot.propTypes = {
 };
 
 export function NavItemRoot({ item, isCollapse, open = false, active, onOpen }) {
+  const { translate } = useLocales();
+
   const { title, path, icon, info, children, disabled, caption, roles } = item;
 
   const renderContent = (
@@ -39,16 +55,16 @@ export function NavItemRoot({ item, isCollapse, open = false, active, onOpen }) 
       {icon && <ListItemIconStyle>{icon}</ListItemIconStyle>}
       <ListItemTextStyle
         disableTypography
-        primary={title}
+        primary={translate(title)}
         secondary={
-          <Tooltip title={caption || ''} arrow>
+          <Tooltip title={translate(caption) || ''} arrow>
             <Typography
               noWrap
               variant="caption"
               component="div"
               sx={{ textTransform: 'initial', color: 'text.secondary' }}
             >
-              {caption}
+              {translate(caption)}
             </Typography>
           </Tooltip>
         }
@@ -100,6 +116,8 @@ NavItemSub.propTypes = {
 };
 
 export function NavItemSub({ item, open = false, active = false, onOpen }) {
+  const { translate } = useLocales();
+
   const { title, path, info, children, disabled, caption, roles } = item;
 
   const renderContent = (
@@ -107,16 +125,16 @@ export function NavItemSub({ item, open = false, active = false, onOpen }) {
       <DotIcon active={active} />
       <ListItemText
         disableTypography
-        primary={title}
+        primary={translate(title)}
         secondary={
-          <Tooltip title={caption || ''} arrow>
+          <Tooltip title={translate(caption) || ''} arrow>
             <Typography
               noWrap
               variant="caption"
               component="div"
               sx={{ textTransform: 'initial', color: 'text.secondary' }}
             >
-              {caption}
+              {translate(caption)}
             </Typography>
           </Tooltip>
         }
