@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import db from "../models/index.js"
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import sgMail from "@sendgrid/mail"
-import { decode } from "punycode";
-=======
 import db from '../models/index.js'
 import jwt from 'jsonwebtoken'
 import speakeasy from 'speakeasy'
 import QRCode from 'qrcode'
 import crypto from 'crypto'
 import sgMail from '@sendgrid/mail'
->>>>>>> 50c4f44cb67fd6ef8dc4306ab1bc1746d3cd1ca6
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 export const signin = async (req, res, next) => {
