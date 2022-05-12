@@ -1,8 +1,10 @@
 import express from 'express'
 const router = express.Router()
 import {
-    signup,
     signin,
+    signup,
+    setupTFA,
+    verifyEmail,
     authenticateToken,
     forgotPassword,
     resetPassword,
@@ -11,7 +13,8 @@ import {
 router.get('/', authenticateToken)
 router.post('/signup', signup)
 router.post('/signin', signin)
-// router.post('/tfa-mobile', tfaMobile)
+router.post('/setup-tfa', setupTFA)
+router.post('/verify-email/:verifyToken', verifyEmail)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 

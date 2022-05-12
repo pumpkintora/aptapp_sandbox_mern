@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 const pendingVerifyUserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, },
+    totp_secret: Object,
     verifyToken: String,
     verifyTokenExpires: Date,
 })
